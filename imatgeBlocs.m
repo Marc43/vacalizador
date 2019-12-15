@@ -4,7 +4,7 @@ function [blocs, numBlocs] = imatgeBlocs(IM, tamanyBloc)
 
     [n, m, ~] = size(IM);
         
-    blocs = cell(1, tamanyBloc, tamanyBloc, 3);
+    blocs = cell(tamanyBloc, tamanyBloc, 3);
     blocIdx = 1;
     
     for i=1:tamanyBloc:n
@@ -16,6 +16,6 @@ function [blocs, numBlocs] = imatgeBlocs(IM, tamanyBloc)
        end
     end
     
-    blocs(~cellfun('isempty', blocs)); % eliminar cel.les buides
+    blocs = blocs(~cellfun('isempty', blocs)); % eliminar cel.les buides
     numBlocs = blocIdx - 1;
 end
