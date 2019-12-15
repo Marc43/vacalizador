@@ -1,4 +1,4 @@
-function features = extractFeatures(data, numBlocs)
+function histos = extractFeatures(data, numBlocs)
 
     histo_rs = zeros(numBlocs, 1, 256);
     histo_gs = zeros(numBlocs, 1, 256);
@@ -11,6 +11,7 @@ function features = extractFeatures(data, numBlocs)
        histo_bs(i, :, :) = imhist(bloc(:, :, 3));
     end
     
-    features = {histo_rs, histo_gs, histo_bs};
+    histos = cat(2, histo_rs, histo_gs, histo_bs);
+    %features = [histo_rs, histo_gs, histo_bs];
     
 end
