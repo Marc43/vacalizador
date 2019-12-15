@@ -1,0 +1,23 @@
+function [blocIdx, [bloc]] = imatgeBlocs(IM, tamanyBloc)
+    % donada una imatge i un tamany de bloc retornem una matriu
+    % tridimensional indexada amb el identificador del bloc.
+
+    [n, m] = size(IM);
+    
+    nBlocs = round(n/tamanyBloc);
+    mBlocs = round(m/tamanyBloc);
+    
+    numBlocs = nBlocs*nBlocs;
+    
+    blocs = zeros(numBlocs, tamanyBloc, tamanyBloc);
+    
+    for i=1:n:nBlocs
+       auxBloc = zeros(tamanyBloc, tamanyBloc);
+
+       for j=1:m:mBlocs
+            
+       end
+    end
+    
+
+end
