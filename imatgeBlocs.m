@@ -26,7 +26,7 @@ function [blocs, numBlocs, PixelsObjecte] = imatgeBlocs(IM, bbox, tamanyBloc)
         if (cond1 && cond2)
             PixelsObjecte = [PixelsObjecte; [j, i]];    
         else
-            PixelsObjecte = [PixelsObjecte; []];
+            PixelsObjecte = [PixelsObjecte; [0 0]];
         end
         
         blocIdx = blocIdx + 1;

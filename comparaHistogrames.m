@@ -1,7 +1,7 @@
 function result = comparaHistogrames(histo1, histo2)
-    % r g b, numBlocs histogrames per a cada conjunt d'histogrames.
+    % compara histograma histo1 amb histo2.
     
-    [~, x, ~] = size(histo1(1));
+    [x, ~] = size(histo1);
         
     histo1_r = histo1(:, :, 1);
     histo1_g = histo1(:, :, 2);
