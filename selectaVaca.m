@@ -1,4 +1,4 @@
-function ans = selectaVaca(I)
+function [objecte, mask] = selectaVaca(I, tamanyBloc, tamanySubBloc)
     figure 
     imshow(I)
     out = getrect;
@@ -7,20 +7,26 @@ function ans = selectaVaca(I)
     y = out(2);
     w = out(3);
     h = out(4);
+
+    bbox = [x, y, w, h];
+
+    % Partim la imatge en blocs, extraiem les caracteristiques dels blocs
+    % i creem un ensemble tree.
+
+    [blocs, ~, esObjecte] = imatgeBlocs(I, bbox, tamanyBloc);
     
-%     L = superpixels(I, w*h);
-%     figure
-%     imshow(I)
-%     h1 = drawpolygon(gca,'Position',[x, y; (x+w-1), y; (x+w-1), (y+h-1); x, (y+h-1);]);
-%     roiPoints = h1.Position;
-%     %roiPoints = [y, x; y, (x+w-1); (y+h-1), (x+w-1); (y+h-1), x;];
-%     roi = poly2mask(roiPoints(:,1), roiPoints(:,2), size(L,1), size(L,2));
-%     BW = grabcut(I, L, roi);
-%     figure
-%     imshow(BW)
-    etiquetaObjectes(I, [x, y, w, h]);
+    idxBlocsFons = find(~esObjecte(:, 1));
+    idxBlocsObjecte = find(esObjecte(:, 1));
     
-    ans = [x, y, w, h];
-    %ans = I(y:y+h-1, x:x+w-1, :);
-    %ans = detector(I);
+    [features, labels] = extraureFeaturesEtiquetades(blocs, idxBlocsFons, idxBlocsObjecte); 
+
+    B = creaBosc(features, labels, 150);
+    
+    fun = @(block_struct) creaMascara(block_struct.data, B);
+    
+    objecte = I(y:y+h-1, x:x+w-1, :);
+    
+    % es pot aplicar sobre tota la imatge tambe..
+    mask = blockproc(objecte, [tamanySubBloc tamanySubBloc], fun);
+
 end

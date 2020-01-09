@@ -18,7 +18,11 @@ function [blocs, numBlocs, PixelsObjecte] = imatgeBlocs(IM, bbox, tamanyBloc)
        upperN = min(i+tamanyBloc, n);
        for j=1:tamanyBloc:m
         upperM = min(j+tamanyBloc, m);
-        blocs(blocIdx) = mat2cell(IM(i:upperN-1, j:upperM-1, :), min(tamanyBloc, upperN-i), min(tamanyBloc, upperM-j), 3);
+        
+        xBloc = min(tamanyBloc, upperN-i);
+        yBloc = min(tamanyBloc, upperM-j);
+        
+        blocs(blocIdx) = mat2cell(IM(i:i+xBloc-1, j:j+yBloc-1, :), xBloc, yBloc, 3);
 
         cond1 = i >= bbox_y && (upperN-1) <= (bbox_y+h-1);
         cond2 = j >= bbox_x && (upperM-1) <= (bbox_x+w-1);
