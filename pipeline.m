@@ -66,12 +66,20 @@ function pipeline()
         
     mascaraObj_2 = blockproc(img_trobar_obj, [tamanySubBloc tamanySubBloc], fun, 'UseParallel', true);
                    
-    maskPixelsList = find(mascaraObj_2(:, :, 1));
+    [y, x] = find(mascaraObj_2(:, :, 1));
     
-    rightmost = max(maskPixelsList);
-    leftmost = min(maskPixelsList);
+    up = min(y);
+    bot = max(y);
+    right = max(x);
+    left = min(x);
     
-    imshow(vaca_trobada);
+    imshow(img_trobar_obj);
+    hold on;
+    
+    rectangle('Position', [left, up , (right - left), (bot - up)], 'Edgecolor', 'r');
+%     
+%     my_vertices = [up left, up right, bot right, bot left];
+%     h = drawpolygon('Position', my_vertices); 
     
 %     fun = @(block_struct) trobaObjecte(block_struct.data, SVM);
 %     retallEnNovaImatge = blockproc(img_trobar_obj, [f c], fun, 'UseParallel', true);
