@@ -1,4 +1,4 @@
-function [objecte, mask] = selectaVaca(I, tamanyBloc, tamanySubBloc)
+function [objecte, mask, B] = selectaVaca(I, tamanyBloc, tamanySubBloc)
     figure 
     imshow(I)
     out = getrect;
@@ -20,13 +20,16 @@ function [objecte, mask] = selectaVaca(I, tamanyBloc, tamanySubBloc)
     
     [features, labels] = extraureFeaturesEtiquetades(blocs, idxBlocsFons, idxBlocsObjecte); 
 
-    B = creaBosc(features, labels, 150);
+    % afecta a la precisio i a la velocitat d'execucio...
+    numArbres = 50;
+    
+    B = creaBosc(features, labels, numArbres);
     
     fun = @(block_struct) creaMascara(block_struct.data, B);
     
     objecte = I(y:y+h-1, x:x+w-1, :);
     
     % es pot aplicar sobre tota la imatge tambe..
-    mask = blockproc(objecte, [tamanySubBloc tamanySubBloc], fun);
+    mask = blockproc(objecte, [tamanySubBloc tamanySubBloc], fun, 'UseParallel', true);
 
 end

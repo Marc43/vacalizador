@@ -66,10 +66,12 @@ function pipeline()
         
     mascaraObj_2 = blockproc(img_trobar_obj, [tamanySubBloc tamanySubBloc], fun, 'UseParallel', true);
                    
-    maskPixelsList = find(mascaraObj_2(:, :, 1));
+    maskPixelsList = find(mascaraObj_2);
     
     rightmost = max(maskPixelsList);
     leftmost = min(maskPixelsList);
+    
+    
     
     imshow(vaca_trobada);
     

@@ -7,5 +7,5 @@ function [meanHue, meanSat, meanValue, meanStdDev] = getFeatureVector(IM)
         meanValue = mean2(hsv_fons(:,:,3));
         sdImage = stdfilt(hsv_fons(:,:,3));
         meanStdDev = mean2(sdImage);
-    
+
 end

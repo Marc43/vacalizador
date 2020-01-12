@@ -1,0 +1,8 @@
+function trobaObjecte(IM, classifier)
+    hog = extractHOGFeatures(IM, 'CellSize', hogCellSize);
+    lbp = extractLBPFeatures(IM, 'CellSize', lbpCellSize, 'Upright', false);
+
+    X = [hog lbp];
+
+   [pred, score] = predict(SVM, X);
+end
