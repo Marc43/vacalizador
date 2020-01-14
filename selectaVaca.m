@@ -13,15 +13,15 @@ function [objecte, mask, B] = selectaVaca(I, tamanyBloc, tamanySubBloc)
     % Partim la imatge en blocs, extraiem les caracteristiques dels blocs
     % i creem un ensemble tree.
 
-    [blocs, ~, esObjecte] = imatgeBlocs(I, bbox, tamanyBloc);
+    %[blocs, ~, esObjecte] = imatgeBlocs(I, bbox, tamanyBloc);
+    [features, labels] = imatgeBlocs(I, bbox, tamanyBloc);
+%     idxBlocsFons = find(~esObjecte(:, 1));
+%     idxBlocsObjecte = find(esObjecte(:, 1));
     
-    idxBlocsFons = find(~esObjecte(:, 1));
-    idxBlocsObjecte = find(esObjecte(:, 1));
-    
-    [features, labels] = extraureFeaturesEtiquetades(blocs, idxBlocsFons, idxBlocsObjecte); 
+    %[features, labels] = extraureFeaturesEtiquetades(blocs, idxBlocsFons, idxBlocsObjecte); 
 
     % afecta a la precisio i a la velocitat d'execucio...
-    numArbres = 50;
+    numArbres = 5;
     
     B = creaBosc(features, labels, numArbres);
     

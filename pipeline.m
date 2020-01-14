@@ -10,7 +10,7 @@ function pipeline()
     
     img_usr_segmenta = imread(path_img_usr_segmenta);
 
-    tamanyBloc = 100; % podriem ferho depenent de la imatge
+    tamanyBloc = 10; % podriem ferho depenent de la imatge
     tamanySubBloc = ceil(tamanyBloc/4);
     
     %trobar la mascara aproximada
