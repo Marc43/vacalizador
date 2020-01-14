@@ -52,6 +52,7 @@ function pipeline()
         rectangle('Position', [left, up , (right - left), (bot - up)], 'Edgecolor', 'r');
         pause;
     end
+    error('adeu')
 end
 
 function proc_mask = post_proc_mask(mask)
