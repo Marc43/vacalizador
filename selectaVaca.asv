@@ -1,0 +1,36 @@
+function [mask, B, bbox, t1, t2] = selectaVaca(I)
+    figure 
+    imshow(I)
+    out = getrect;
+    close
+    x = out(1);
+    y = out(2);
+    w = out(3);
+    h = out(4);
+    t1 = ceil((w)* (h) / 10000)
+    t2 = ceil(t1/4)
+    bbox = [x, y, w, h];
+
+    % Partim la imatge en blocs, extraiem les caracteristiques dels blocs
+    % i creem un ensemble tree.
+
+    %[blocs, ~, esObjecte] = imatgeBlocs(I, bbox, tamanyBloc);
+    [features, labels] = imatgeBlocs(I, bbox, t1);
+%     idxBlocsFons = find(~esObjecte(:, 1));
+%     idxBlocsObjecte = find(esObjecte(:, 1));
+    
+    %[features, labels] = extraureFeaturesEtiquetades(blocs, idxBlocsFons, idxBlocsObjecte); 
+
+    % afecta a la precisio i a la velocitat d'execucio...
+%     numArbres = 5;
+%     
+%     B = creaBosc(features, labels, numArbres);
+    B = fitcnb(features, labels);
+    fun = @(block_struct) creaMascara(block_struct.data, B);
+    
+    objecte = I(y:y+h-1, x:x+w-1, :);
+    
+    % es pot aplicar sobre tota la imatge tambe..
+    mask = blockproc(objecte, [t2 t2], fun, 'UseParallel', false);
+
+end

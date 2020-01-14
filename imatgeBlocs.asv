@@ -25,11 +25,13 @@ function [features, labels] = imatgeBlocs(IM, bbox, tamanyBloc)
                     retall = IM(i:i+tamanyBloc, j:j+tamanyBloc, :);
                     [meanHue, meanSat, meanValue, meanStdDev, meanR, meanG, meanB, meanGray] = getFeatureVector(retall);
                     features = [features; [meanHue, meanSat, meanValue, meanStdDev, meanR, meanG, meanB, meanGray]];
+                    %features = [features; [meanHue, meanSat, meanValue, meanStdDev]];%, meanR, meanG, meanB, meanGray]];
                     labels = [labels;estaDintre(i, j, i+tamanyBloc, j+tamanyBloc, bbox_x, bbox_y, w, h)];
                 else
                     retall = IM(i:i+tamanyBloc, j:m, :);
-                    vector = getFeatureVector(retall);
+                    [meanHue, meanSat, meanValue, meanStdDev, meanR, meanG, meanB, meanGray] = getFeatureVector(retall);
                     features = [features; [meanHue, meanSat, meanValue, meanStdDev, meanR, meanG, meanB, meanGray]];
+                    %features = [features; [meanHue, meanSat, meanValue, meanStdDev]];%, meanR, meanG, meanB, meanGray]];
                     labels = [labels;estaDintre(i, j, i+tamanyBloc, m, bbox_x, bbox_y, w, h)];
                 end
                 j = j + tamanyBloc;
@@ -40,11 +42,13 @@ function [features, labels] = imatgeBlocs(IM, bbox, tamanyBloc)
                     retall = IM(i:n, j:j+tamanyBloc, :);
                     [meanHue, meanSat, meanValue, meanStdDev, meanR, meanG, meanB, meanGray] = getFeatureVector(retall);
                     features = [features; [meanHue, meanSat, meanValue, meanStdDev, meanR, meanG, meanB, meanGray]];
+                    %features = [features; [meanHue, meanSat, meanValue, meanStdDev]];%, meanR, meanG, meanB, meanGray]];
                     labels = [labels;estaDintre(i, j, n, j+tamanyBloc, bbox_x, bbox_y, w, h)];
                 else
                     retall = IM(i:n, j:m, :);
                     [meanHue, meanSat, meanValue, meanStdDev, meanR, meanG, meanB, meanGray] = getFeatureVector(retall);
                     features = [features; [meanHue, meanSat, meanValue, meanStdDev, meanR, meanG, meanB, meanGray]];
+                    %features = [features; [meanHue, meanSat, meanValue, meanStdDev]];%, meanR, meanG, meanB, meanGray]];
                     labels = [labels;estaDintre(i, j, n, m, bbox_x, bbox_y, w, h)];
                 end
                 j = j + tamanyBloc;
@@ -80,9 +84,9 @@ function [features, labels] = imatgeBlocs(IM, bbox, tamanyBloc)
 end
 
 function bool = estaDintre(a,b,c,d,x,y,w,h)
-    if(x<b & b+d<x+w & y<a & a+c<y+h)
+    if(x+10<b & d-10<x+w & y+10<a & c-10<y+h)
         bool = 1;
     else
-        bool = 0
+        bool = 0;
     end
 end

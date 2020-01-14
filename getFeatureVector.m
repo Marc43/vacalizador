@@ -11,5 +11,5 @@ function [meanHue, meanSat, meanValue, meanStdDev, meanR, meanG, meanB, meanGray
         meanR = mean2(IM(:,:,1));
         meanG = mean2(IM(:,:,2));
         meanB = mean2(IM(:,:,3));
-        meanGray = mean2(gray(:,:));
+        meanGray = mean2(gray);
 end

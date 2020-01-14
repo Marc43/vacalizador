@@ -11,9 +11,11 @@ function pipeline()
     img_usr_segmenta = imread(path_img_usr_segmenta);
     [n, m, ~] = size(img_usr_segmenta);
     
+    tamanyBloc = 10; % podriem ferho depenent de la imatge
+    tamanySubBloc = ceil(tamanyBloc/4);
     
     %trobar la mascara aproximada
-    [mask, treeBosc, bbox, tamanyBloc, tamanySubBloc] = selectaVaca(img_usr_segmenta);
+    [mask, treeBosc, bbox] = selectaVaca(img_usr_segmenta, tamanyBloc, tamanySubBloc);
 
     x = bbox(1);
     y = bbox(2);
@@ -21,7 +23,7 @@ function pipeline()
     h = bbox(4);
     
     
-    boundary = post_proc_mask(mask);
+    boundary = post_proc_mask(mask, tamanyBloc, 2);
     
     zerapios = zeros(n, m);
     zerapios(y:y+h-1, x:x+w-1) = boundary;
@@ -29,12 +31,28 @@ function pipeline()
     objecte = imoverlay(img_usr_segmenta, zerapios, 'red');
 
     imshow(objecte);
+    hold on;
     
     retall = objecte;
                   
     % --------------- 2na fase del pipeline
-    tamany = tamanyBloc;
     
+    [f, c] = size(retall);
+    
+    hogCellSize = [64 64];
+    lbpCellSize = [128 128];
+    
+    retall = rgb2gray(retall);
+
+    model.hog = extractHOGFeatures(retall, 'CellSize', hogCellSize);
+    model.lbp = extractLBPFeatures(retall, 'CellSize', lbpCellSize, 'Upright', false);
+    
+    X = [model.hog, model.lbp];
+    Y = 0;
+    
+    t = templateSVM('Standardize', 1);
+    SVM = fitcecoc(X, Y, 'Learners', t);
+
     [path_img_trobar_obj, user_canceled] = imgetfile;
     
     if user_canceled
@@ -42,14 +60,13 @@ function pipeline()
     end
     
     img_trobar_obj = imread(path_img_trobar_obj);
+   % img_trobar_obj = rgb2gray(img_trobar_obj);
     
     fun = @(block_struct) creaMascara(block_struct.data, treeBosc);
         
-    mascaraObj_2 = blockproc(img_trobar_obj, [tamany tamany], fun, 'UseParallel', false);
+    mascaraObj_2 = blockproc(img_trobar_obj, [tamanySubBloc tamanySubBloc], fun, 'UseParallel', true);
                    
-    mask = post_proc_mask(mascaraObj_2);
-    
-    [y, x] = find(mask(:, :, 1));
+    [y, x] = find(mascaraObj_2(:, :, 1));
     
     up = min(y);
     bot = max(y);
@@ -57,19 +74,27 @@ function pipeline()
     left = min(x);
     
     imshow(img_trobar_obj);
+    hold on;
     
     rectangle('Position', [left, up , (right - left), (bot - up)], 'Edgecolor', 'r');
+%     
+%     my_vertices = [up left, up right, bot right, bot left];
+%     h = drawpolygon('Position', my_vertices); 
+    
+%     fun = @(block_struct) trobaObjecte(block_struct.data, SVM);
+%     retallEnNovaImatge = blockproc(img_trobar_obj, [f c], fun, 'UseParallel', true);
+    
 end
 
-function proc_mask = post_proc_mask(mask);
+function proc_mask = post_proc_mask(mask, tb, tsb);
     % un bloc son tamanyBloc*tamanyBloc. Considerarem que un objecte a de
     % ser minim constituit per 4 blocs...
     mask = mask(:, :, 1);
     
     out = bwconncomp(mask);
     llistaPixels = out.PixelIdxList(:);
-    [nrows, ~] = cellfun(@size, llistaPixels);
-    [~, index] = max(nrows);
+    [nrows, ncols] = cellfun(@size, llistaPixels);
+    [value, index] = max(nrows);
     
     llistaPixels = out.PixelIdxList(index);
     llistaPixels = cell2mat(llistaPixels);
@@ -77,6 +102,7 @@ function proc_mask = post_proc_mask(mask);
     aux_mask = zeros(out.ImageSize(1), out.ImageSize(2));
     aux_mask(llistaPixels(:)) = 1;
     
+    %mask_p1 = bwareaopen(aux_mask, tb*tb*4); % ferho depenent del tamany de bloc estaria be.
     
     mask_p2 = imfill(aux_mask, 'holes');
     
