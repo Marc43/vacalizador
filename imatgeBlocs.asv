@@ -15,24 +15,18 @@ function [blocs, numBlocs, PixelsObjecte] = imatgeBlocs(IM, bbox, tamanyBloc)
     PixelsObjecte = [];
     
     while i < n
-        if(i+tamanyBloc < n)
-            while j<m
-                if(j+tamanyBloc < m)
-                    
-                else
-
-                end
-                IM = ()
+        if(j+tamanyBloc < m)
+                
+            else
+                
             end
-        else
-            while j<m
-                if(j+tamanyBloc < m)
-
-                else
-
-                end
-                IM = ()
+        while j<m
+            if(j+tamanyBloc < m)
+                
+            else
+                
             end
+            IM = ()
         end
     end
 %     for i=1:tamanyBloc:n
