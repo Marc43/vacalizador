@@ -9,11 +9,7 @@ function [features, labels] = imatgeBlocs(IM, bbox, tamanyBloc)
     bbox_y = bbox(2);
     w = bbox(3);
     h = bbox(4);
-        
-    blocs = cell(tamanyBloc, tamanyBloc, 3);
-    blocIdx = 1;
     
-    %PixelsObjecte = [];
     i = 1;
     features = [];
     labels = [];

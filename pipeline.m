@@ -86,3 +86,18 @@ function proc_mask = post_proc_mask(mask);
     proc_mask = bigger_mask_p1 - mask_p2;
     
 end
+
+function outBlock = creaMascara(inBlock, bosc)
+    
+    % En el nostre classificador 0 es el fons i 1 l'objecte
+    [f1, f2, f3, f4, f5, f6, f7, f8] = getFeatureVector(inBlock);
+    feature_vector = [[f1, f2, f3, f4, f5, f6, f7, f8]];
+    predictedClass = predict(bosc,feature_vector);
+    
+    if predictedClass == 0
+        outBlock = zeros(size(inBlock));
+    else
+        outBlock = ones(size(inBlock));
+    end
+    
+end

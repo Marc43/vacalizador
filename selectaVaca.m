@@ -26,3 +26,22 @@ function [mask, B, bbox, t1, t2] = selectaVaca(I)
     mask = blockproc(objecte, [t2 t2], fun, 'UseParallel', false);
 
 end
+
+function B = creaBosc(features, labels, numTrees)   
+    B = TreeBagger(numTrees, features, labels, 'Method', 'classification');
+end
+
+function outBlock = creaMascara(inBlock, bosc)
+    
+    % En el nostre classificador 0 es el fons i 1 l'objecte
+    [f1, f2, f3, f4, f5, f6, f7, f8] = getFeatureVector(inBlock);
+    feature_vector = [[f1, f2, f3, f4, f5, f6, f7, f8]];
+    predictedClass = predict(bosc,feature_vector);
+    
+    if predictedClass == 0
+        outBlock = zeros(size(inBlock));
+    else
+        outBlock = ones(size(inBlock));
+    end
+    
+end
