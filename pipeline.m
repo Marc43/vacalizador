@@ -29,39 +29,32 @@ function pipeline()
     objecte = imoverlay(img_usr_segmenta, zerapios, 'red');
 
     imshow(objecte);
-    
+    pause;
     retall = objecte;
                   
     % --------------- 2na fase del pipeline
     tamany = tamanyBloc;
     
-    [path_img_trobar_obj, user_canceled] = imgetfile;
     
-    if user_canceled
-        error("No has seleccionat pas cap imatge.");
+    user_canceled = false;
+    while ~ user_canceled
+        [path_img_trobar_obj, user_canceled] = imgetfile;
+        img_trobar_obj = imread(path_img_trobar_obj);
+        fun = @(block_struct) creaMascara(block_struct.data, treeBosc);
+        mascaraObj_2 = blockproc(img_trobar_obj, [tamany tamany], fun, 'UseParallel', false);
+        mask = post_proc_mask(mascaraObj_2);
+        [y, x] = find(mask(:, :, 1));
+        up = min(y);
+        bot = max(y);
+        right = max(x);
+        left = min(x);
+        imshow(img_trobar_obj);
+        rectangle('Position', [left, up , (right - left), (bot - up)], 'Edgecolor', 'r');
+        pause;
     end
-    
-    img_trobar_obj = imread(path_img_trobar_obj);
-    
-    fun = @(block_struct) creaMascara(block_struct.data, treeBosc);
-        
-    mascaraObj_2 = blockproc(img_trobar_obj, [tamany tamany], fun, 'UseParallel', false);
-                   
-    mask = post_proc_mask(mascaraObj_2);
-    
-    [y, x] = find(mask(:, :, 1));
-    
-    up = min(y);
-    bot = max(y);
-    right = max(x);
-    left = min(x);
-    
-    imshow(img_trobar_obj);
-    
-    rectangle('Position', [left, up , (right - left), (bot - up)], 'Edgecolor', 'r');
 end
 
-function proc_mask = post_proc_mask(mask);
+function proc_mask = post_proc_mask(mask)
     % un bloc son tamanyBloc*tamanyBloc. Considerarem que un objecte a de
     % ser minim constituit per 4 blocs...
     mask = mask(:, :, 1);
